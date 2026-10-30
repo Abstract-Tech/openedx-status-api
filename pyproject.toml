@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openedx-status-api"
+version = "0.1.0"
+description = "Standalone status-page backend for Open edX"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Abstract-Tech"}]
+requires-python = ">=3.11"
+dependencies = ["fastapi>=0.110", "uvicorn>=0.27", "httpx>=0.26", "pyyaml>=6", "pymysql>=1.1", "cryptography>=42", "pymongo>=4.6"]
+
+[project.urls]
+Homepage = "https://github.com/Abstract-Tech/openedx-status-api"
+Source = "https://github.com/Abstract-Tech/openedx-status-api"
+Issues = "https://github.com/Abstract-Tech/openedx-status-api/issues"
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[tool.setuptools]
+packages = ["openedx_status_api"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

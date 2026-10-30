@@ -1,0 +1,20 @@
+checks:
+  - {id: lms, name: LMS, group: Open edX, kind: http, target: "http://lms:8000/heartbeat", interval: 60}
+  - {id: cms, name: Studio, group: Open edX, kind: http, target: "http://cms:8000/heartbeat"}
+  - {id: web, name: Website, group: Open edX, kind: http, target: "http://caddy:80/", critical: false}
+  - {id: learning-mfe, name: Learning MFE, group: Open edX, kind: http, target: "http://mfe:8002/learning/", critical: false}
+  - id: mysql
+    name: MySQL
+    group: Databases
+    kind: mysql
+    target: "mysql:3306"
+    params: {user: openedx, password_env: STATUS_MYSQL_PASSWORD, database: openedx}
+  - id: mongodb
+    name: MongoDB
+    group: Databases
+    kind: mongo
+    target: "mongodb:27017"
+    params: {username_env: STATUS_MONGODB_USER, password_env: STATUS_MONGODB_PASSWORD}
+  - {id: redis, name: Redis, group: Databases, kind: redis, target: "redis:6379", params: {password_env: STATUS_REDIS_PASSWORD}}
+  # Replace the TLS target below with your own domain.
+  - {id: tls, name: TLS certificate, group: Open edX, kind: ssl, target: "example.com:443", critical: false, params: {warn_days: 7}}

@@ -1,0 +1,6 @@
+{$STATUS_DOMAIN} {
+	encode zstd gzip
+	# Ignored by browsers over plain HTTP (STATUS_DOMAIN=:80), effective once real TLS is on.
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy status-web:8080
+}

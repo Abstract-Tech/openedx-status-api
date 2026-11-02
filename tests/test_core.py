@@ -154,3 +154,15 @@ def test_never_reported_check_waits_but_stale_one_degrades(store, settings):
     assert build_status(settings, cs, store, NOW)["groups"][0]["status"] == "operational"  # b has not reported yet
     store.record("b", Result(NOW - 1000, True, "ok"))
     assert build_status(settings, cs, store, NOW)["groups"][0]["status"] == "degraded"  # b went stale
+
+
+def test_failure_streak_survives_restart(store):
+    c = Check("a", "A", "G", "tcp", "x:1")
+    for i in range(2):
+        store.record("a", Result(NOW + i, False, ""))
+    t = IncidentTracker(store, 3)
+    t.restore(c)
+    store.record("a", Result(NOW + 2, False, ""))
+    t.observe(c, Result(NOW + 2, False, ""))
+    assert store.open_incident_for("a") is not None
+    assert store.incidents(0)[0]["started"] == NOW

@@ -22,6 +22,8 @@ class Runner:
             n = self.store.resolve_orphaned_incidents([c.id for c in self.checks], int(time.time()))
             if n:
                 log.info("resolved %d incident(s) for checks no longer configured", n)
+        for c in self.checks:
+            self.tracker.restore(c)
         self._tasks = [asyncio.create_task(self._loop(c), name=f"check-{c.id}") for c in self.checks]
         self._tasks.append(asyncio.create_task(self._prune_loop(), name="prune"))
 

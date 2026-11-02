@@ -55,6 +55,18 @@ class Store:
             ).fetchall()
         return len(rows) == n and not any(r["ok"] for r in rows)
 
+    def failure_streak(self, check_id: str, limit: int) -> tuple[int, int | None]:
+        with self._lock:
+            rows = self._db.execute(
+                "SELECT ts, ok FROM results WHERE check_id=? ORDER BY ts DESC, rowid DESC LIMIT ?", (check_id, limit)
+            ).fetchall()
+        streak = []
+        for r in rows:
+            if r["ok"]:
+                break
+            streak.append(r["ts"])
+        return len(streak), (streak[-1] if streak else None)
+
     def days(self, check_id: str, retention: int = 90, now: int | None = None) -> list[dict]:
         """Exactly `retention` entries oldest->newest, zero-filled."""
         today = datetime.fromtimestamp(now or time.time(), timezone.utc).date()

@@ -6,23 +6,9 @@ Django, so it keeps working when Open edX is down.
 
 ## Quick start
 
-This runs the API, the web page ([openedx-status-web](https://github.com/Abstract-Tech/openedx-status-web))
-and a Caddy proxy with Docker Compose:
-
-    cd deploy
-    cp .env.example .env              # set STATUS_DOMAIN, and point its DNS at this machine
-    cp checks.example.yml checks.yml  # put your own addresses in
-    docker compose up -d
-
-Then open `https://<STATUS_DOMAIN>`. To try it locally without HTTPS, set `STATUS_DOMAIN=:80`,
-`STATUS_BIND=127.0.0.1` and `STATUS_HTTP_PORT=8088` in `.env`.
-
-Day to day:
-
-- Change the checks: edit `checks.yml`, then `docker compose up -d --force-recreate status-api` (a plain restart can keep a stale copy of the file).
-- Logs: `docker compose logs -f status-api`.
-- Backup: the history is the SQLite file in the `status-data` volume.
-- Already have a reverse proxy? Remove the `caddy` service and point your proxy at `status-web:8080`.
+To run the API, the web page ([openedx-status-web](https://github.com/Abstract-Tech/openedx-status-web))
+and a Caddy proxy together, use [openedx-status-deploy](https://github.com/Abstract-Tech/openedx-status-deploy).
+This repo only contains the API and its Docker image (`ghcr.io/abstract-tech/openedx-status-api`).
 
 To run the API alone without Docker:
 
@@ -44,7 +30,7 @@ If you mount a host folder as `/data`, run `chown 10001` on it, because the cont
 - `params`: extra options for some kinds
 
 To keep a secret out of the file, write `<name>_env: SOME_VARIABLE` instead of the value, for example
-`password_env: DB_PASSWORD`. With the compose file in `deploy/`, put `DB_PASSWORD=...` in `deploy/.env`
+`password_env: DB_PASSWORD`. With [openedx-status-deploy](https://github.com/Abstract-Tech/openedx-status-deploy), put `DB_PASSWORD=...` in its `.env`
 (it is passed to the API container) and recreate the container. This works for the http `expected_status` and `verify_tls`, the mysql `user`,
 `password` and `database`, the mongo `username` and `password`, the redis `password`, and the ssl `warn_days`.
 

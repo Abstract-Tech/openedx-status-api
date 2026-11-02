@@ -10,6 +10,11 @@ class IncidentTracker:
         self._fails: dict[str, int] = {}
         self._first_fail: dict[str, int] = {}  # ts of the first failure in the current streak
 
+    def restore(self, check: Check):
+        n, first = self.store.failure_streak(check.id, self.threshold)
+        if n:
+            self._fails[check.id], self._first_fail[check.id] = n, first
+
     def observe(self, check: Check, r: Result):
         open_id = self.store.open_incident_for(check.id)
         if r.ok:
